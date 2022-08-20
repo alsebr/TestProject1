@@ -16,6 +16,22 @@ jobs:
         id: buildx
         with:
           install: true
+      - name: Mkdir results-dir
+        # make sure results dir is created
+        run: mkdir -p results-dir
+      - name: run kics Scan
+        uses: Checkmarx/kics-github-action@v1.5
+        with:
+          # scanning two directories: ./terraform/ ./cfn-templates/ plus a single file
+          path: 'Dockerfile'
+          output_path: results-dir
+          # Display the results in json format
+      - name: display kics results
+        run: |
+          cat myResults/results.json
+ 
+ 
+
       -
         name: Build
         run: |
@@ -39,13 +55,3 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      - name: run kics Scan
-        uses: checkmarx/kics-github-action@v1.3
-        with:
-          # scanning two directories: ./terraform/ ./cfn-templates/ plus a single file
-          path: './Dockerfile'
-          output_path: ./
-          # Display the results in json format
-      - name: display kics results
-        run: |
-          cat myResults/results.json
