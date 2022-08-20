@@ -38,3 +38,14 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: run kics Scan
+        uses: checkmarx/kics-github-action@v1.3
+        with:
+          # scanning two directories: ./terraform/ ./cfn-templates/ plus a single file
+          path: 'Dockerfile'
+          output_path: myResults/
+          # Display the results in json format
+      - name: display kics results
+        run: |
+          cat myResults/results.json
